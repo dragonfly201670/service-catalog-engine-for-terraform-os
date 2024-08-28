@@ -147,39 +147,7 @@ Resources:
       AllocationId: !GetAtt 'ElasticIPAddress1.AllocationId'
       SubnetId: !Ref PublicSubnet1
       
-  NatGatewayFromPublicSubnet2:
-    Condition: MoreThan1AZ
-    Type: 'AWS::EC2::NatGateway'
-    Properties:
-      Tags:
-        - Key: Name
-          Value: TerraformEngineNatGateway2
-      AllocationId: !GetAtt 'ElasticIPAddress2.AllocationId'
-      SubnetId: !Ref PublicSubnet2
-  
-  NatGatewayFromPublicSubnet3:
-    Condition: MoreThan2AZs
-    Type: 'AWS::EC2::NatGateway'
-    Properties:
-      Tags:
-        - Key: Name
-          Value: TerraformEngineNatGateway3
-      AllocationId: !GetAtt 'ElasticIPAddress3.AllocationId'
-      SubnetId: !Ref PublicSubnet3
-  
   ElasticIPAddress1:
-    Type: 'AWS::EC2::EIP'
-    Properties:
-      Domain: vpc
-  
-  ElasticIPAddress2:
-    Condition: MoreThan1AZ
-    Type: 'AWS::EC2::EIP'
-    Properties:
-      Domain: vpc
-      
-  ElasticIPAddress3:
-    Condition: MoreThan2AZs
     Type: 'AWS::EC2::EIP'
     Properties:
       Domain: vpc
@@ -307,24 +275,6 @@ Resources:
         - Key: Name
           Value: TerraformEnginePrivateRouteTable1
       VpcId: !Ref VPC
-  
-  PrivateRouteTable2:
-    Condition: MoreThan1AZ
-    Type: 'AWS::EC2::RouteTable'
-    Properties:
-      Tags:
-        - Key: Name
-          Value: TerraformEnginePrivateRouteTable2
-      VpcId: !Ref VPC
-  
-  PrivateRouteTable3:
-    Condition: MoreThan2AZs
-    Type: 'AWS::EC2::RouteTable'
-    Properties:
-      Tags:
-        - Key: Name
-          Value: TerraformEnginePrivateRouteTable3
-      VpcId: !Ref VPC
 
   # Create Routes in Private Subnet Route Tables
   PrivateRoute1:
@@ -333,23 +283,7 @@ Resources:
       RouteTableId: !Ref PrivateRouteTable1
       DestinationCidrBlock: '0.0.0.0/0'
       NatGatewayId: !Ref NatGatewayFromPublicSubnet1
-      
-  PrivateRoute2:
-    Condition: MoreThan1AZ
-    Type: 'AWS::EC2::Route'
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable2
-      DestinationCidrBlock: '0.0.0.0/0'
-      NatGatewayId: !Ref NatGatewayFromPublicSubnet2
 
-  PrivateRoute3:
-    Condition: MoreThan2AZs
-    Type: 'AWS::EC2::Route'
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable3
-      DestinationCidrBlock: '0.0.0.0/0'
-      NatGatewayId: !Ref NatGatewayFromPublicSubnet3
-      
   # Associate Private Subnets
   PrivateRouteTableAssociation1:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
@@ -362,14 +296,14 @@ Resources:
     Condition: MoreThan1AZ
     Properties:
       SubnetId: !Ref PrivateSubnet2
-      RouteTableId: !Ref PrivateRouteTable2
+      RouteTableId: !Ref PrivateRouteTable1
       
   PrivateRouteTableAssociation3:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Condition: MoreThan2AZs
     Properties:
       SubnetId: !Ref PrivateSubnet3
-      RouteTableId: !Ref PrivateRouteTable3
+      RouteTableId: !Ref PrivateRouteTable1
 
   # Create Security Group
   InstanceSecurityGroup:
@@ -585,7 +519,7 @@ Resources:
       LaunchTemplateData:
         NetworkInterfaces:
           - DeviceIndex: 0
-            AssociatePublicIpAddress: true
+            AssociatePublicIpAddress: false
             Groups:
               - !Ref InstanceSecurityGroup
             DeleteOnTermination: true
