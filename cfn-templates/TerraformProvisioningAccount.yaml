@@ -1,4 +1,4 @@
-Description: Resources set up in the accounts where Terraform provisioning will occur.
+Description: Resources deployment policy set up in the accounts where Terraform provisioning will occur.
 Parameters:
   TerraformEngineAccount:
     Type: String
@@ -54,6 +54,10 @@ Resources:
                   - s3:List*
                   - s3:PutBucketTagging
                 Resource: !Sub "arn:${AWS::Partition}:s3:::*"
+              - Effect: Allow
+                Action:
+                  - ec2:*
+                Resource: !Sub "arn:${AWS::Partition}:ec2:::*"
               # Resource group and tagging permissions required for Service Catalog terraform open source products
               - Effect: Allow
                 Action:
