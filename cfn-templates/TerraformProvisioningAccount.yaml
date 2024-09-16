@@ -58,6 +58,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - ec2:*
+                  - ec2:Describe*
                 Resource: !Sub "arn:${AWS::Partition}:ec2:::*"
               # Resource group and tagging permissions required for Service Catalog terraform open source products
               - Effect: Allow
