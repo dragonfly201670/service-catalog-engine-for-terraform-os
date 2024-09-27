@@ -59,7 +59,33 @@ Resources:
                 Action:
                   - ec2:*
                   - ec2:Describe*
-                Resource: !Sub "arn:${AWS::Partition}:ec2:::*"
+                Resource: !Sub "*"
+              - Effect: Allow
+                Action:
+                  - autoscaling:*
+                Resource: !Sub "*"
+              - Effect: Allow
+                Action:
+                  - iam:AddRoleToInstanceProfile
+                  - iam:CreateRole
+                  - iam:UpdateRole
+                  - iam:UpdateRoleDescription
+                  - iam:AttachRolePolicy
+                  - iam:CreatePolicy
+                  - iam:CreatePolicyVersion
+                  - iam:ListAttachedRolePolicies
+                  - iam:CreateInstanceProfile
+                  - iam:TagRole
+                  - iam:TagPolicy
+                  - iam:GetRole
+                  - iam:GetPolicy
+                  - iam:ListInstanceProfiles
+                  - iam:ListInstanceProfilesForRole
+                Resource: !Sub "*"
+              - Effect: Allow
+                Action:
+                  - eks:*
+                Resource: !Sub "*"
               # Resource group and tagging permissions required for Service Catalog terraform open source products
               - Effect: Allow
                 Action:
